@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de CEP</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <form id="form-cep">
+        <h1>Consulta de Endereço</h1>
+        <hr style="border-color: black; border-width: 2px;">
+        <label for="cep">CEP: Preencha para buscar os dados</label>
+        <input type="text" id="cep" name="cep" />
+        <button type="button" onclick="consultarCep()">Consultar</button>
+        <br />
+        <label for="logradouro">Logradouro:</label>
+        <input type="text" id="logradouro" name="logradouro" readonly />
+        <br />
+        <label for="bairro">Bairro:</label>
+        <input type="text" id="bairro" name="bairro" readonly />
+        <br />
+        <label for="cidade">Cidade:</label>
+        <input type="text" id="cidade" name="cidade" readonly />
+        <br />
+        <label for="estado">Estado:</label>
+        <input type="text" id="estado" name="estado" readonly />
+        <p style="font-family: 'Brush Script MT', cursive; font-size: 18px;">By José Henrique</p>
+    </form>
+
+    <script>
+        function consultarCep() {
+            const cep = document.getElementById('cep').value;
+            const url = `https://viacep.com.br/ws/${cep}/json/`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.hasOwnProperty('erro')) {
+                        limparCampos();
+                        return;
+                    }
+
+                    document.getElementById('logradouro').value = data.logradouro;
+                    document.getElementById('bairro').value = data.bairro;
+                    document.getElementById('cidade').value = data.localidade;
+                    document.getElementById('estado').value = data.uf;
+                })
+                .catch(error => {
+                    console.error('Erro ao consultar o CEP:', error);
+                    limparCampos();
+                });
+        }
+
+        function limparCampos() {
+            document.getElementById('logradouro').value = '';
+            document.getElementById('bairro').value = '';
+            document.getElementById('cidade').value = '';
+            document.getElementById('estado').value = '';
+        }
+    </script>
+</body>
+</html>
